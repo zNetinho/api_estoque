@@ -16,7 +16,6 @@ const itensService = {
           const secret = process.env.SECRET
           jwt.verify(token, secret)
           next();
-
       } catch (error) {
           console.log(error)
           return res.status(500).json({ message: 'Houve um erro no servidor' })
@@ -25,13 +24,20 @@ const itensService = {
 
     checkCredentials: async (req, res) => {
       const id = req.params.id;
-      const user = await UserModel.findById(id, '-password');
+      const user = await userModel.findById(id, '-password');
       if (!user) {
           return res.status(404).json({ message: 'Usuario não encontrado' });
       }
       return res.status(200).json({ message: user })
     },
 
+    fetchUserLogged: async (token) => {
+        const secret = process.env.SECRET
+        const idUser = jwt.decode(token, secret)
+        if(!idUser) return null
+        const creatorUser = await userModel.findById(idUser.id);
+        return creatorUser;
+    }
 }
 
 module.exports = itensService;

@@ -19,9 +19,18 @@ const itensModel = new Schema({
         type: Number,
         required: true
     },
-    // tasks: {
-    //     type: [task]
-    // }
-})
+    criadoPor: {
+        type: String,
+        required: true
+    },
+    atualizadoPor: {
+        type: String,
+        required: false
+    }
+},
+{
+    timestamps: true
+}
+)
 
 module.exports = mongoose.model("Itens", itensModel)
