@@ -1,4 +1,7 @@
 const userModel = require('../models/userModels');
+const json2csv = require('json2csv').Parser;
+const fs = require('fs');
+const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config
 
@@ -37,7 +40,38 @@ const itensService = {
         if(!idUser) return null
         const creatorUser = await userModel.findById(idUser.id);
         return creatorUser;
+    },
+
+    exportCSV: async(req, res) => {
+
+        
+        
+    },
+        
+    tocsv: async function (itens) {
+        try {
+            const fields = ['_id', 'nome', 'preco', 'img', 'estoque', 'criadoPor', 'atualizadoPor'];
+            const opts = { fields };
+            // passar local onde vai armazenar a planilha, gerar um uuid unico para ela
+            const filename = './src/exports/' + uuid.v4() + '.csv';            
+
+            const csvSDK = new json2csv(opts);
+            // usando a instacia criada, passamos os itens para cria a planilha
+            const csv = csvSDK.parse(itens);
+
+            fs.writeFile(filename, csv, function (err) {
+                if (err) throw err;
+                console.log('file saved');
+            });            
+        // retorna o nome do item para concatenar para o download.
+        return filename;
+
+    } catch (err) {
+        console.error(err);
     }
+
+    },
+    //Em breve função de deletar a planilha dos arquivos após o download.
 }
 
 module.exports = itensService;

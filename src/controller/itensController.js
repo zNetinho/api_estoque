@@ -1,12 +1,13 @@
 const itensModels = require('../models/itensModels');
-const { fetchUserLogged } = require('../services/itensService');
+const itensService = require('../services/itensService');
+const { fetchUserLogged, exportCSV } = require('../services/itensService');
 
 const itensController = {
   create: async (req, res) => {
       const token = req.headers?.authorization?.split(' ')[1];
       const creatorUser = await fetchUserLogged(token);
       if(!creatorUser) {
-        console.log(creatorUser.nome, "não existe")
+        return res.status(401).json({ message: `Por favor faça o login`})
       }
     try {
       const item = {
@@ -15,6 +16,9 @@ const itensController = {
         img: req.body.img,
         estoque: req.body.estoque,
         criadoPor: creatorUser.nome
+      }
+      if(!item) {
+        return res.status(403).json({ message: 'Por favor preencha corretamente as informações.'})
       }
       await itensModels.create(item);
       return res.status(201).json({ msg: `Item cadastrado com sucesso nome do item: ${item.nome}`})
@@ -65,6 +69,17 @@ const itensController = {
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função removeItem ${error.error}`)
     }
+  },
+
+  donwloadCSV: async(req, res) => {
+    try {
+      const itens = await itensModels.find();
+      let filename = await itensService.tocsv(itens);
+      res.download(filename)
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 }
 
