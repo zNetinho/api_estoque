@@ -1,6 +1,6 @@
 const itensModels = require('../models/itensModels');
 const itensService = require('../services/itensService');
-const { fetchUserLogged, exportCSV } = require('../services/itensService');
+const { fetchUserLogged } = require('../services/itensService');
 
 const itensController = {
   create: async (req, res) => {
@@ -75,11 +75,12 @@ const itensController = {
     try {
       const itens = await itensModels.find();
       let filename = await itensService.tocsv(itens);
-      res.download(filename)
+      res.download(filename, function excludeAfterDownloading () {
+        itensService.excludeCSVAfter(res, filename)
+      })
     } catch (error) {
       console.log(error)
     }
-
   }
 }
 

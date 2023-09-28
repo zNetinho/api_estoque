@@ -41,12 +41,6 @@ const itensService = {
         const creatorUser = await userModel.findById(idUser.id);
         return creatorUser;
     },
-
-    exportCSV: async(req, res) => {
-
-        
-        
-    },
         
     tocsv: async function (itens) {
         try {
@@ -72,6 +66,14 @@ const itensService = {
 
     },
     //Em breve função de deletar a planilha dos arquivos após o download.
+    excludeCSVAfter: async function (res, filename) {
+        if(!filename) return res.status(403)
+
+        fs.unlink(filename, (err) => {
+            if(err) throw err
+            console.log(`file was deleted`)
+        });
+    }
 }
 
 module.exports = itensService;

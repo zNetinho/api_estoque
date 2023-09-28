@@ -20,7 +20,8 @@ router
   .delete(itensService.checkToken, async(req, res) => itensController.removeItem(req, res))
 
 router
-  .get('/export', async(req, res) => itensController.donwloadCSV(req, res))
+  .route('/export')
+  .get(async(req, res) => itensController.donwloadCSV(req, res))
 
 
 module.exports = router;
