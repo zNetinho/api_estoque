@@ -16,6 +16,10 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
  
 ## Features
 
+### Modulo User
+
+#### Endopoints
+
 [] Fazer endpoint (privado) USER de GET
 
 [x] Fazer endpoint (privado) USER de POST
@@ -23,6 +27,16 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 [] Fazer endpoint (privado) USER de DELETE
 
 [] Fazer endpoint (privado) USER de PATCH
+
+### Modulo Itens
+
+[x] Exportação da planilha com os dados do banco
+
+[x] Importar planilha para o servidor, e ler os dados
+
+[ ] Edição massiva, por meio de planilha.
+
+#### Endpoints
 
 [x] Fazer endpoint (privado) GET de ITEM
 

@@ -65,14 +65,19 @@ const itensService = {
     }
 
     },
-    //Em breve função de deletar a planilha dos arquivos após o download.
-    excludeCSVAfter: async function (res, filename) {
-        if(!filename) return res.status(403)
 
+    excludeCSVAfter: async function (res, filename) {
+        if(!filename) return res.status(417)
+        // function de callback, chamada após o download da planilha
         fs.unlink(filename, (err) => {
             if(err) throw err
             console.log(`file was deleted`)
         });
+    },
+
+    massiveEdit: async(req, res, filename) => {
+        const planilhaAtualizada = fs.readFile(`./src/uploads/a88ee93d-46b2-418f-8e55-335e85f4926e.csv`);
+        console.log(planilhaAtualizada)
     }
 }
 

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 
+const uploads = require('../config/upload');
 const itensService = require('../services/itensService');
 const itensController = require('./../controller/itensController');
 
@@ -21,7 +22,15 @@ router
 
 router
   .route('/export')
-  .get(async(req, res) => itensController.donwloadCSV(req, res))
+  .get( async(req, res) => itensController.donwloadCSV(req, res))
+
+router
+  .route('/export/upload', uploads.single('arquivo'))
+  .post(async(req, res) => itensController.uploadFile(req, res))
+
+router
+  .route('/export/edit')
+  .patch(async(req, res) => itensController.massiveEdit(req, res))
 
 
 module.exports = router;

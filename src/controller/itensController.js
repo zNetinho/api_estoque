@@ -1,3 +1,5 @@
+const uploadConfig = require('../config/upload');
+const fs = require('fs');
 const itensModels = require('../models/itensModels');
 const itensService = require('../services/itensService');
 const { fetchUserLogged } = require('../services/itensService');
@@ -75,13 +77,42 @@ const itensController = {
     try {
       const itens = await itensModels.find();
       let filename = await itensService.tocsv(itens);
-      res.download(filename, function excludeAfterDownloading () {
-        itensService.excludeCSVAfter(res, filename)
-      })
+      console.log(filename)
+      res.download(filename)
     } catch (error) {
       console.log(error)
     }
-  }
+  },
+
+
+  uploadFile: async function (req, res) {
+    // planilha com os dados atualizado.
+    const multer = require('multer');
+    // cria uma instância do middleware configurada
+    const storage = multer.diskStorage({
+    destination: './src/uploads', // Diretório onde os arquivos serão armazenados
+    filename: (req, file, cb) => {
+        // Define o nome do arquivo como o nome original do arquivo enviado
+        cb(null, file.originalname);
+    },
+    });
+    const upload = multer({ storage: storage });  
+
+    upload.single('arquivo')(req, res, (err) => {
+    if(err) return console.log(err)
+    })
+    return res.status(200).json({ message: 'Tudo certo' })
+  },
+
+  massiveEdit: async(req, res, filename) => {
+    fs.readFile(`./src/uploads/a88ee93d-46b2-418f-8e55-335e85f4926e.csv`, 'utf-8', (err, data) => {
+      if(err) return console.log(err)
+      console.log(data)
+
+    });
+    return res.status(200).json({ message: 'Deu certo'})
+}
+  
 }
 
 module.exports = itensController;
