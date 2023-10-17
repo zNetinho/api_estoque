@@ -9,10 +9,11 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 ### Express.js
 ### MongoDB
+### JWT Token
 
 ## to-do do projeto
-[] Criar roles dos USER
-[] Modificar models de Item (adicionar criado por)
+[ ] Criar roles dos USER
+[x] Modificar models de Item (adicionar criado por)
  
 ## Features
 
@@ -20,21 +21,23 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 #### Endopoints
 
-[] Fazer endpoint (privado) USER de GET
+[ ] Fazer endpoint (privado) USER de GET
 
 [x] Fazer endpoint (privado) USER de POST
 
-[] Fazer endpoint (privado) USER de DELETE
+[ ] Fazer endpoint (privado) USER de DELETE
 
-[] Fazer endpoint (privado) USER de PATCH
+[ ] Fazer endpoint (privado) USER de PATCH
 
 ### Modulo Itens
 
 [x] Exportação da planilha com os dados do banco
 
-[x] Importar planilha para o servidor, e ler os dados
+[x] Importar planilha para o servidor, e ler os dados (Descontinuada)
 
-[ ] Edição massiva, por meio de planilha.
+[x] Adição massiva, por planilha.
+
+[ ] Edição massiva, por planilha
 
 #### Endpoints
 

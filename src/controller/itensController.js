@@ -2,7 +2,9 @@ const uploadConfig = require('../config/upload');
 const fs = require('fs');
 const itensModels = require('../models/itensModels');
 const itensService = require('../services/itensService');
-const { fetchUserLogged } = require('../services/itensService');
+const { fetchUserLogged } = require('../shared/utils/funtions');
+const { Readable } = require('stream');
+const readline = require('readline')
 
 const itensController = {
   create: async (req, res) => {
@@ -84,7 +86,7 @@ const itensController = {
     }
   },
 
-
+  // Verificar necessidade dessa rota.
   uploadFile: async function (req, res) {
     // planilha com os dados atualizado.
     const multer = require('multer');
@@ -104,13 +106,45 @@ const itensController = {
     return res.status(200).json({ message: 'Tudo certo' })
   },
 
-  massiveEdit: async(req, res, filename) => {
-    fs.readFile(`./src/uploads/a88ee93d-46b2-418f-8e55-335e85f4926e.csv`, 'utf-8', (err, data) => {
-      if(err) return console.log(err)
-      console.log(data)
+  massiveAdd: async(req, res) => {
+    const { file } = req;
+    const { buffer } = file;
+    const creatorUser = await fetchUserLogged(req);
 
+    const readbleFile = new Readable();
+    readbleFile.push(buffer);
+    readbleFile.push(null);
+
+    const itensLine = readline.createInterface({
+      input: readbleFile,
     });
-    return res.status(200).json({ message: 'Deu certo'})
+
+    const itens = [];
+
+    for await ( let item of itensLine) {
+      const itensLineSplit = item.split(',');
+
+      itens.push({
+        nome: itensLineSplit[0],
+        preco: itensLineSplit[1],
+        img: itensLineSplit[2],
+        estoque: itensLineSplit[3],
+      })
+      console.log('itens[]', itens)
+
+    }
+
+    for await (let {nome, preco, img, estoque, criadoPor, atualizadoPor} of itens) {
+      await itensModels.create({
+        nome,
+        preco,
+        img,
+        estoque,
+        criadoPor: creatorUser,
+      })
+    }
+    if(itens.length < 0) return res.status(403).json({ message: 'method not allowed'})
+    return res.status(200).json({ message: 'Deu certo'});
 }
   
 }
