@@ -10,6 +10,7 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 ### Express.js
 ### MongoDB
 ### JWT Token
+### Firebase
 
 ## to-do do projeto
 [ ] Criar roles dos USER
@@ -17,17 +18,24 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
  
 ## Features
 
+### Login rápido com conta Google.
+- Prover para os usuarios do e-commerce a oportunidade de logar com a conta google.
+
 ### Modulo User
 
 #### Endopoints
 
-[ ] Fazer endpoint (privado) USER de GET
+[ ] Endpoint (privado) USER de GET
 
-[x] Fazer endpoint (privado) USER de POST
+[x] Endpoint (privado) USER de POST
 
-[ ] Fazer endpoint (privado) USER de DELETE
+[ ] Endpoint (privado) USER de DELETE
 
-[ ] Fazer endpoint (privado) USER de PATCH
+[ ] Endpoint (privado) USER de PATCH
+
+[x] Endpoint Login com o Google
+
+[x] Endpoint Registro com o Google.
 
 ### Modulo Itens
 
@@ -41,10 +49,10 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 #### Endpoints
 
-[x] Fazer endpoint (privado) GET de ITEM
+[x] Endpoint (privado) GET de ITEM
 
-[x] Fazer endpoint (privado) POST de ITEM
+[x] Endpoint (privado) POST de ITEM
 
-[x] Fazer endpoint (privado) PATCH de ITEM
+[x] Endpoint (privado) PATCH de ITEM
 
-[x] Fazer endpoint (privado) DELETE de ITEM
+[x] Endpoint (privado) DELETE de ITEM

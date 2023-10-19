@@ -15,4 +15,8 @@ router
     .route("/login/:id")
     .get(services.checkToken, async(req, res) => userController.checkCredentials(req, res))
 
+router
+    .route("/loginGoogle")
+    .post(async(req, res) => userController.loginWithEmailAndPassword(req, res))
+
 module.exports = router;

@@ -53,7 +53,26 @@ const services = {
             console.log(error)
             return res.status(500).json({ message: 'Houve um erro no servidor' })
         }
-    }
+    },
+
+    // loginWithEmailAndPassword: (req, res) => {
+    //     const { email, password } = req;
+    //     console.log(email, password)
+    //     signInWithEmailAndPassword(auth, email, password)
+    //         .then((userCredential) => {
+    //             // Signed in 
+    //             const user = userCredential.user;
+    //             console.log(user)
+    //             return res.status(200).json({user})
+    //             // ...
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //             const errorCode = error.code;
+    //             const errorMessage = error.message;
+    //             return res.status(500).json({ message: `O erro status code é:${errorCode} a mensagem:${errorMessage}` })
+    //         });
+    // }
 
 }
 

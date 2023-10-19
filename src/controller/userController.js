@@ -2,6 +2,8 @@ const services = require('../services/userService');
 const userModel = require('./../models/userModels');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { GoogleAuthProvider, signInWithPopup, User } = require("firebase/auth");
+const { auth, loginWithGoogle } = require('../services/Login');
 
 const userController = {
     create: async (req, res) => {
@@ -90,7 +92,19 @@ const userController = {
           console.log(error);
       }
 
-  },
+    },
+
+    loginWithEmailAndPassword: async (req, res, next) => {
+        const { email, password } = req.body;
+        console.log(email, password)
+        let user = await loginWithGoogle.logarGoole(auth, email, password);
+        if(user == null) {
+           user = await loginWithGoogle.criarComGoogle(auth, email, password)
+           return res.status(200).json({message: `O usuario cadastrado foi cadastrado${user}`}) 
+        }
+        console.log('usuario Google',user)
+        return res.status(200).json({message: `O usuario logou ${user}`})        
+    }
   };
 
   module.exports = userController;

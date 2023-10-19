@@ -6,9 +6,6 @@ const routes = require("./routes/router")
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 app.use("/api", routes)
 
 app.listen(port, () => {
