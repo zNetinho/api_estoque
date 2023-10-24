@@ -115,6 +115,14 @@ const userController = {
         if (!user) return res.status(403).json({ message: "Usuario não encontrado"});
 
         return res.status(200).json({ message: `removido`})
+    },
+
+    listUser: async (req, res) => {
+        if(req.method === 'GET') {
+            const users = await userModel.find({}, '-password -confirm_password');
+            console.log(users)
+            return res.status(200).json({ users })
+        }
     }
   };
 

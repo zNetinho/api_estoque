@@ -23,4 +23,8 @@ router
     .route("/")
     .delete( async(req, res) => userController.deleteUser(req, res));
 
+router
+    .route("/")
+    .get(async(req, res) => userController.listUser(req, res));
+
 module.exports = router;
