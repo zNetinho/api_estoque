@@ -46,8 +46,8 @@ const itensController = {
 
   updateItem: async (req, res) => {
     try {
-      const { id } = req.params;
-      console.log(id)
+      const { sku } = req.params;
+      console.log(sku)
       const token = req.headers.authorization.split(' ')[1];
       const creatorUser = await fetchUserLogged(token);
       const updateItem = {
@@ -58,8 +58,8 @@ const itensController = {
         atualizadoPor: creatorUser.nome
       }
 
-      await itensModels.findByIdAndUpdate({_id: id}, updateItem);
-      return res.status(200).json({ msg: `item alterado com sucesso ${id}`})
+      await itensModels.findByIdAndUpdate({sku: sku}, updateItem);
+      return res.status(200).json({ msg: `item alterado com sucesso ${sku}`})
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função updateItem ${error.error}`)
     }
@@ -87,7 +87,7 @@ const itensController = {
   },
 
   // Verificar necessidade dessa rota.
-  uploadFile: async function (req, res) {
+  uploadFile: async function (req, res, next) {
     // planilha com os dados atualizado.
     const multer = require('multer');
     // cria uma instância do middleware configurada
@@ -123,26 +123,34 @@ const itensController = {
 
     for await ( let item of itensLine) {
       const itensLineSplit = item.split(',');
+      const sku = Number(itensLineSplit[0])
 
       itens.push({
-        nome: itensLineSplit[0],
-        preco: itensLineSplit[1],
-        img: itensLineSplit[2],
-        estoque: itensLineSplit[3],
-      })
-      console.log('itens[]', itens)
-
-    }
-
-    for await (let {nome, preco, img, estoque, criadoPor, atualizadoPor} of itens) {
-      await itensModels.create({
-        nome,
-        preco,
-        img,
-        estoque,
-        criadoPor: creatorUser,
+        sku: sku,
+        nome: itensLineSplit[1],
+        preco: itensLineSplit[2],
+        img: itensLineSplit[3],
+        estoque: itensLineSplit[4],
       })
     }
+
+      // valida se o conteudo já existe com base no sku, atualiza se existir, cria se não tiver.
+      for await (const item of itens) {
+        const itemCloned = await itensModels.findOne({ sku: item.sku });    
+        if (itemCloned) {
+          await itensModels.updateOne({sku: item.sku}, item);
+        } else {
+            await itensModels.create({
+              sku: item.sku,
+              nome: item.nome,
+              preco: item.preco,
+              img: item.img,
+              estoque: item.estoque,
+              criadoPor: creatorUser,
+            })
+        }
+      }
+
     if(itens.length < 0) return res.status(403).json({ message: 'method not allowed'})
     return res.status(200).json({ message: 'Deu certo'});
 }

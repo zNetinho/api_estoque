@@ -25,11 +25,11 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 #### Endopoints
 
-[ ] Endpoint (privado) USER de GET
+[x] Endpoint (privado) USER de GET
 
 [x] Endpoint (privado) USER de POST
 
-[ ] Endpoint (privado) USER de DELETE
+[x] Endpoint (privado) USER de DELETE
 
 [ ] Endpoint (privado) USER de PATCH
 
@@ -45,7 +45,9 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 [x] Adição massiva, por planilha.
 
-[ ] Edição massiva, por planilha
+[x] Edição massiva, por planilha.
+
+[ ] Deletar item massivos.
 
 #### Endpoints
 
