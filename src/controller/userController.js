@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { GoogleAuthProvider, signInWithPopup, User } = require("firebase/auth");
 const { auth, loginWithGoogle } = require('../services/Login');
+const userModels = require('./../models/userModels');
 
 const userController = {
     create: async (req, res) => {
@@ -104,6 +105,16 @@ const userController = {
         }
         console.log('usuario Google',user)
         return res.status(200).json({message: `O usuario logou ${user}`})        
+    },
+
+    deleteUser: async (req, res) => {
+        const { id } = req.body;
+        if(!id) return res.status(403).json({ message: "Id não enviado"});
+
+        const user = await userModel.findByIdAndDelete(id);
+        if (!user) return res.status(403).json({ message: "Usuario não encontrado"});
+
+        return res.status(200).json({ message: `removido`})
     }
   };
 
