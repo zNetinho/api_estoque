@@ -3,6 +3,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const itensModel = new Schema({
+    sku: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 6
+    },
     nome: {
         type: String,
         required: true
