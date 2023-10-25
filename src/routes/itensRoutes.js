@@ -34,5 +34,9 @@ router
   .route('/adc-massive')
   .post(simpleUpload.single('file'), async(req, res) => itensController.massiveAdd(req, res))
 
+router
+  .route('/csv/exclude', )
+  .delete(uploads.single('file'), async(req, res) => itensController.excludeMassive( req, res ))
+
 
 module.exports = router;

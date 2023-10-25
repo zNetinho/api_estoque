@@ -3,7 +3,7 @@ require('dotenv').config;
 const userModel = require('../../models/userModels')
 
 const utils = {
-  checkToken: (req, res, next) => {
+  checkToken: async (req, res, next) => {
     // const authHeader = req.headers.authorization;
     // Se encontrar algo no headers, ele vai fazer o split, e transformar em um array separando as palavras
     // pelo espaço e pega o segundo item que e o token sem a palavra Bearer.

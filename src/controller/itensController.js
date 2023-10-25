@@ -4,7 +4,8 @@ const itensModels = require('../models/itensModels');
 const itensService = require('../services/itensService');
 const { fetchUserLogged } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
-const readline = require('readline')
+const readline = require('readline');
+const utils = require('../shared/utils/funtions');
 
 const itensController = {
   create: async (req, res) => {
@@ -46,8 +47,8 @@ const itensController = {
 
   updateItem: async (req, res) => {
     try {
-      const { sku } = req.params;
-      console.log(sku)
+      const { id } = req.params;
+      console.log(id)
       const token = req.headers.authorization.split(' ')[1];
       const creatorUser = await fetchUserLogged(token);
       const updateItem = {
@@ -58,8 +59,8 @@ const itensController = {
         atualizadoPor: creatorUser.nome
       }
 
-      await itensModels.findByIdAndUpdate({sku: sku}, updateItem);
-      return res.status(200).json({ msg: `item alterado com sucesso ${sku}`})
+      await itensModels.findByIdAndUpdate({id: id}, updateItem);
+      return res.status(200).json({ msg: `item alterado com sucesso ${id}`})
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função updateItem ${error.error}`)
     }
@@ -153,7 +154,30 @@ const itensController = {
 
     if(itens.length < 0) return res.status(403).json({ message: 'method not allowed'})
     return res.status(200).json({ message: 'Deu certo'});
-}
+  },
+
+  excludeMassive: async (req, res) => {
+    const { file } = req
+    const { buffer } = file;
+
+    const readbleFile = new Readable();
+    readbleFile.push(buffer);
+    readbleFile.push(null);
+
+    const itens = readline.createInterface({
+      input: readbleFile
+    })
+
+    for await ( let item of itens) {
+      const itensExclude = item.split(',');
+      const sku = Number(itensExclude[0]);
+      const itemExclude = await itensModels.findOneAndDelete({sku: sku})
+      console.log(itemExclude)
+    }
+
+    return res.status(200).json({ message: 'Ok'})
+
+    }
   
 }
 
