@@ -1,7 +1,7 @@
 const uploadConfig = require('../config/upload');
 const fs = require('fs');
-const itensModels = require('../models/itensModels');
-const itensService = require('../services/itensService');
+const ProductsModels = require('../models/ProductsModels');
+const ProductsService = require('../services/ProductsService');
 const { fetchUserLogged } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
 const readline = require('readline');
@@ -15,7 +15,7 @@ const itensController = {
         return res.status(401).json({ message: `Por favor faça o login`})
       }
     try {
-      const item = {
+      const product = {
         nome: req.body.nome,
         preco: req.body.preco,
         img: req.body.img,
@@ -25,8 +25,8 @@ const itensController = {
       if(!item) {
         return res.status(403).json({ message: 'Por favor preencha corretamente as informações.'})
       }
-      await itensModels.create(item);
-      return res.status(201).json({ msg: `Item cadastrado com sucesso nome do item: ${item.nome}`})
+      await ProductsModels.create(item);
+      return res.status(201).json({ msg: `Item cadastrado com sucesso nome do item: ${product.nome}`})
     } catch (error) {
       throw new Error(`erro inesperado, visite a função create do controller ${error}`)
     }
@@ -34,12 +34,11 @@ const itensController = {
 
   listItens: async (req, res) => {
     const idUser = req.headers.id;
-    console.log('listItens Function',idUser)
 
     try {
-      const itensModel = itensModels;
-      const itens = await itensModel.find();
-      return res.status(200).json(itens)
+      const ProductsModel = ProductsModels;
+      const products = await ProductsModel.find();
+      return res.status(200).json(products)
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função listItens${error.error}`)
     }
@@ -51,7 +50,7 @@ const itensController = {
       console.log(id)
       const token = req.headers.authorization.split(' ')[1];
       const creatorUser = await fetchUserLogged(token);
-      const updateItem = {
+      const updateProduct = {
         nome: req.body.nome,
         preco: req.body.preco,
         img: req.body.img,
@@ -59,7 +58,7 @@ const itensController = {
         atualizadoPor: creatorUser.nome
       }
 
-      await itensModels.findByIdAndUpdate({id: id}, updateItem);
+      await ProductsModels.findByIdAndUpdate({id: id}, updateProduct);
       return res.status(200).json({ msg: `item alterado com sucesso ${id}`})
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função updateItem ${error.error}`)
@@ -69,7 +68,7 @@ const itensController = {
   removeItem: async(req, res) => {
     try {
       const { id } = req.params;
-      await itensModels.findByIdAndDelete(id);
+      await ProductsModels.findByIdAndDelete(id);
       return res.status(200).json({ msg: `Item excluido com sucesso ${id}`})
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função removeItem ${error.error}`)
@@ -78,8 +77,8 @@ const itensController = {
 
   donwloadCSV: async(req, res) => {
     try {
-      const itens = await itensModels.find();
-      let filename = await itensService.tocsv(itens);
+      const itens = await ProductsModels.find();
+      let filename = await ProductsService.tocsv(itens);
       console.log(filename)
       res.download(filename)
     } catch (error) {
@@ -137,11 +136,11 @@ const itensController = {
 
       // valida se o conteudo já existe com base no sku, atualiza se existir, cria se não tiver.
       for await (const item of itens) {
-        const itemCloned = await itensModels.findOne({ sku: item.sku });    
+        const itemCloned = await ProductsModels.findOne({ sku: item.sku });    
         if (itemCloned) {
-          await itensModels.updateOne({sku: item.sku}, item);
+          await ProductsModels.updateOne({sku: item.sku}, item);
         } else {
-            await itensModels.create({
+            await ProductsModels.create({
               sku: item.sku,
               nome: item.nome,
               preco: item.preco,
@@ -171,7 +170,7 @@ const itensController = {
     for await ( let item of itens) {
       const itensExclude = item.split(',');
       const sku = Number(itensExclude[0]);
-      const itemExclude = await itensModels.findOneAndDelete({sku: sku})
+      const itemExclude = await ProductsModels.findOneAndDelete({sku: sku})
       console.log(itemExclude)
     }
 

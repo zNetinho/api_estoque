@@ -4,7 +4,7 @@ const multer = require('multer');
 const uploads = require('../config/upload');
 const simpleUpload = require('../config/upload');
 const utils = require('../shared/utils/funtions');
-const itensController = require('./../controller/itensController');
+const itensController = require('../controller/itensController');
 
 router
   .route('/')
