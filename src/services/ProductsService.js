@@ -5,7 +5,7 @@ const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config
 
-const itensService = {
+const ProductsService = {
     checkToken: (req, res, next) => {
       // const authHeader = req.headers.authorization;
       // Se encontrar algo no headers, ele vai fazer o split, e transformar em um array separando as palavras
@@ -81,4 +81,4 @@ const itensService = {
     }
 }
 
-module.exports = itensService;
+module.exports = ProductsService;

@@ -4,8 +4,8 @@ const userController = require("./userRoutes");
 
 router.use('/user', userController);
 
-const itensController = require("./itensRoutes")
+const ProductsController = require("./ProductsRoutes");
 
-router.use('/itens', itensController)
+router.use('/product', ProductsController)
 
 module.exports = router
