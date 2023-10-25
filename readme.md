@@ -21,40 +21,5 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 ### Login rápido com conta Google.
 - Prover para os usuarios do e-commerce a oportunidade de logar com a conta google.
 
-### Modulo User
-
-#### Endopoints
-
-[x] Endpoint (privado) USER de GET
-
-[x] Endpoint (privado) USER de POST
-
-[x] Endpoint (privado) USER de DELETE
-
-[ ] Endpoint (privado) USER de PATCH
-
-[x] Endpoint Login com o Google
-
-[x] Endpoint Registro com o Google.
-
-### Modulo Itens
-
-[x] Exportação da planilha com os dados do banco
-
-[x] Importar planilha para o servidor, e ler os dados (Descontinuada)
-
-[x] Adição massiva, por planilha.
-
-[x] Edição massiva, por planilha.
-
-[x] Deletar item massivos.
-
-#### Endpoints
-
-[x] Endpoint (privado) GET de ITEM
-
-[x] Endpoint (privado) POST de ITEM
-
-[x] Endpoint (privado) PATCH de ITEM
-
-[x] Endpoint (privado) DELETE de ITEM
+### Importação/Exportação
+A API aceita arquivos CSV para registrar itens no banco de dados.
