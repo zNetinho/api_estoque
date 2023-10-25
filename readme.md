@@ -47,7 +47,7 @@ O projeto vai simular uma API de estoque onde e possível inserir um item no inv
 
 [x] Edição massiva, por planilha.
 
-[ ] Deletar item massivos.
+[x] Deletar item massivos.
 
 #### Endpoints
 
