@@ -5,8 +5,7 @@ const { Schema } = mongoose;
 const ProductsModel = new Schema({
     sku: {
         type: Number,
-        min: 1,
-        max: 6
+        required: true
     },
     nome: {
         type: String,

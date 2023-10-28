@@ -32,9 +32,20 @@ const utils = {
         return creatorUser.nome;
   },
 
-  setSkuRandom: () => {
-    const sku = Math.random(99999999 * 9).toFixed(2);
-    console.log('numero',sku)
+  createASlug: (nomeProduto) => {
+    const regexAcentos = /[áàãâäéèêëíìîïóòõôöúùûü]/g;
+    const regexEspacos = /\s+/g;
+    const nomeLimpo = nomeProduto.replace(regexAcentos, function (match) {
+      const mapaAcentos = {
+        'á': 'a', 'à': 'a', 'ã': 'a', 'â': 'a', 'ä': 'a',
+        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+        'í': 'i', 'ì': 'i', 'î': 'i', 'ï': 'i',
+        'ó': 'o', 'ò': 'o', 'õ': 'o', 'ô': 'o', 'ö': 'o',
+        'ú': 'u', 'ù': 'u', 'û': 'u', 'ü': 'u',
+      };
+      return mapaAcentos[match];
+    });
+    return nomeLimpo.replace(regexEspacos, "-")
   }
 }
 

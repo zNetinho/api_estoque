@@ -20,7 +20,7 @@ router
 
 router
   .route('/:id')
-  .delete(utils.checkToken, async(req, res) => ProductsController.removeItem(req, res))
+  .delete(utils.checkToken, async(req, res) => ProductsController.removeProduct(req, res))
 
 router
   .route('/export')

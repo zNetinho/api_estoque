@@ -1,27 +1,29 @@
-const uploadConfig = require('../config/upload');
-const fs = require('fs');
 const ProductsModels = require('../models/ProductsModels');
 const ProductsService = require('../services/ProductsService');
-const { fetchUserLogged, setSkuRandom } = require('../shared/utils/funtions');
+const { fetchUserLogged } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
 const readline = require('readline');
 const utils = require('../shared/utils/funtions');
-const getNextSequence = require('../db/conn')
+
 
 const ProductsController = {
   create: async (req, res) => {
-      const token = req.headers?.authorization?.split(' ')[1];
       const creatorUser = await fetchUserLogged(req);
-      const seq = await ProductsService.getNextUserId();
+      const sku = await ProductsService.getNextUserId();
+      const slug = utils.createASlug(req.body.nome);
       if(!creatorUser) {
         return res.status(401).json({ message: `Por favor faça o login`})
       }
     try {
       const product = {
-        sku: seq,
+        sku: sku,
         nome: req.body.nome,
         preco: req.body.preco,
         img: req.body.img,
+        descricao: req.body.descricao.length > 0 ? req.body.descricao : req.body.nome,
+        title_seo: req.body.nome,
+        categoria: req.body.categoria,
+        slug: slug,
         estoque: req.body.estoque,
         criadoPor: creatorUser
       }
@@ -40,8 +42,6 @@ const ProductsController = {
   },
 
   listItens: async (req, res) => {
-    const idUser = req.headers.id;
-
     try {
       const ProductsModel = ProductsModels;
       const products = await ProductsModel.find();
@@ -54,25 +54,28 @@ const ProductsController = {
   updateItem: async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(id)
-      const token = req.headers.authorization.split(' ')[1];
-      const creatorUser = await fetchUserLogged(token);
+      const creatorUser = await fetchUserLogged(req);
+      let descricao = req.body.descricao.length > 0 ? req.body.descricao : req.body.nome;
+      
       const updateProduct = {
         nome: req.body.nome,
         preco: req.body.preco,
         img: req.body.img,
+        descricao: descricao,
+        title_seo: req.body.nome,
+        categoria: req.body.categoria,
         estoque: req.body.estoque,
-        atualizadoPor: creatorUser.nome
+        atualizadoPor: creatorUser
       }
 
-      await ProductsModels.findByIdAndUpdate({id: id}, updateProduct);
+      await ProductsModels.findByIdAndUpdate({_id: id}, updateProduct);
       return res.status(200).json({ msg: `item alterado com sucesso ${id}`})
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função updateItem ${error.error}`)
     }
   },
 
-  removeItem: async(req, res) => {
+  removeProduct: async(req, res) => {
     try {
       const { id } = req.params;
       await ProductsModels.findByIdAndDelete(id);
@@ -82,7 +85,7 @@ const ProductsController = {
     }
   },
 
-  donwloadCSV: async(req, res) => {
+  donwloadCSV: async(res) => {
     try {
       const itens = await ProductsModels.find();
       let filename = await ProductsService.tocsv(itens);
@@ -93,17 +96,16 @@ const ProductsController = {
     }
   },
 
-  // Verificar necessidade dessa rota.
   uploadFile: async function (req, res, next) {
-    // planilha com os dados atualizado.
+    // arquivo com os dados atualizado.
     const multer = require('multer');
     // cria uma instância do middleware configurada
     const storage = multer.diskStorage({
-    destination: './src/uploads', // Diretório onde os arquivos serão armazenados
-    filename: (req, file, cb) => {
-        // Define o nome do arquivo como o nome original do arquivo enviado
-        cb(null, file.originalname);
-    },
+      destination: './src/uploads', // Diretório onde os arquivos serão armazenados
+      filename: (req, file, cb) => {
+          // Define o nome do arquivo como o nome original do arquivo enviado
+          cb(null, file.originalname);
+      },
     });
     const upload = multer({ storage: storage });  
 
@@ -130,14 +132,19 @@ const ProductsController = {
 
     for await ( let item of itensLine) {
       const itensLineSplit = item.split(',');
-      const sku = Number(itensLineSplit[0])
+      const seq = await ProductsService.getNextUserId();
 
       itens.push({
-        sku: sku,
-        nome: itensLineSplit[1],
-        preco: itensLineSplit[2],
-        img: itensLineSplit[3],
-        estoque: itensLineSplit[4],
+        sku: seq,
+        nome: itensLineSplit[0],
+        preco: itensLineSplit[1],
+        img: itensLineSplit[2],
+        descricao: itensLineSplit[3],
+        title_seo: itensLineSplit[0],
+        categoria: itensLineSplit[5],
+        estoque: itensLineSplit[6],
+        slug: utils.createASlug(itensLineSplit[0]),
+        criadoPor: creatorUser
       })
     }
 
@@ -148,11 +155,14 @@ const ProductsController = {
           await ProductsModels.updateOne({sku: item.sku}, item);
         } else {
             await ProductsModels.create({
-              sku: item.sku,
               nome: item.nome,
               preco: item.preco,
               img: item.img,
+              descricao: item.descricao,
+              title_seo: item.title_seo,
+              categoria: item.categoria,
               estoque: item.estoque,
+              slug: utils.createASlug(item.slug),
               criadoPor: creatorUser,
             })
         }
