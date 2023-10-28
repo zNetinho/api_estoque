@@ -6,6 +6,6 @@ router.use('/user', userController);
 
 const ProductsController = require("./ProductsRoutes");
 
-router.use('/product', ProductsController)
+router.use('/products', ProductsController)
 
 module.exports = router

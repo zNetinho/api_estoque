@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
 const ProductsModel = new Schema({
     sku: {
         type: Number,
-        required: true,
         min: 1,
         max: 6
     },
@@ -18,14 +17,26 @@ const ProductsModel = new Schema({
         required: true
     },
     img: {
-        type: String,
-        required: true
+        type: Array
     },
     descricao: {
         type: String,
     },
+    title_seo: {
+        type: String,
+        required: true,
+        min: 10,
+        max: 100,
+    },
+    description_seo: {
+        type: String,
+    },
     categoria: {
         type: String,
+    },
+    slug: {
+        type: String,
+        required: true
     },
     estoque: {
         type: Number,

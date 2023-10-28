@@ -1,10 +1,21 @@
+// Importações
 const userModel = require('../models/userModels');
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const json2csv = require('json2csv').Parser;
 const fs = require('fs');
 const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
+const ProductsModels = require('../models/ProductsModels');
 require('dotenv').config
 
+const dbName = 'contador';
+
+// Variaveis
+const DB_USER = process.env.DB_USER
+const DB_PASSWORD = process.env.DB_PASSWORD
+const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@devagram.zjxhfk7.mongodb.net/projeto-estoque`
+
+// Funções auxiliares.
 const ProductsService = {
     checkToken: (req, res, next) => {
       // const authHeader = req.headers.authorization;
@@ -78,7 +89,57 @@ const ProductsService = {
     massiveEdit: async(req, res, filename) => {
         const planilhaAtualizada = fs.readFile(`./src/uploads/a88ee93d-46b2-418f-8e55-335e85f4926e.csv`);
         console.log(planilhaAtualizada)
-    }
+    },
+
+    checkProduct: async(product) => {
+        const nomeProduto = product.nome;
+        console.log(product)
+        const productCloned = await ProductsModels.findOne({nome: nomeProduto});
+        if(productCloned) return true;
+    },
+
+    getNextSequence: async (name) => {
+        const MongoClient = require('mongodb').MongoClient;
+
+        const URL = 'mongodb://localhost:27017';
+        const dbName = 'contador';
+        
+        // Função para obter o próximo valor do auto-incremento
+
+        debugger
+        
+        // Exemplo de como usar a função getNextUserId
+        (async () => {
+          const novoUserId = await getNextUserId();
+          console.log('Próximo UserID:', novoUserId);
+        })();
+        
+        },
+        getNextUserId: async () => {
+            const client = new MongoClient(URL, { useUnifiedTopology: true });
+            try {
+              await client.connect();
+              const db = client.db(dbName);
+              console.log(db)
+              // Coleção de contadores
+              const countersCollection = db.collection('contadores');
+              // Nome do campo que você deseja auto-incrementar
+              const campoAutoIncremento = 'userid';
+              const result = await countersCollection.findOneAndUpdate(
+                { _id: campoAutoIncremento },
+                { $inc: { contador: 1 } },
+                { returnOriginal: true, upsert: true }
+              );
+              if (!result.value) {
+                // Se o contador não existia antes, pode inicializar com 1 ou outro valor padrão.
+                return 1;
+              }
+              return result.value.contador;
+            } finally {
+              client.close();
+            }
+          }
+              
 }
 
 module.exports = ProductsService;

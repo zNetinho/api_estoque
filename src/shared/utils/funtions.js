@@ -23,13 +23,18 @@ const utils = {
   },
 
   fetchUserLogged: async (req) => {
-      const token = req.headers.authorization.split(' ')[1];
+      const token = req.headers?.authorization?.split(' ')[1];
       const secret = process.env.SECRET
       const idUser = jwt.decode(token, secret)
       if(!idUser) return null
       const creatorUser = await userModel.findById(idUser.id);
       console.log(creatorUser.nome)
         return creatorUser.nome;
+  },
+
+  setSkuRandom: () => {
+    const sku = Math.random(99999999 * 9).toFixed(2);
+    console.log('numero',sku)
   }
 }
 

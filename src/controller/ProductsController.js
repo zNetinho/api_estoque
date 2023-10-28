@@ -2,30 +2,37 @@ const uploadConfig = require('../config/upload');
 const fs = require('fs');
 const ProductsModels = require('../models/ProductsModels');
 const ProductsService = require('../services/ProductsService');
-const { fetchUserLogged } = require('../shared/utils/funtions');
+const { fetchUserLogged, setSkuRandom } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
 const readline = require('readline');
 const utils = require('../shared/utils/funtions');
+const getNextSequence = require('../db/conn')
 
-const itensController = {
+const ProductsController = {
   create: async (req, res) => {
       const token = req.headers?.authorization?.split(' ')[1];
-      const creatorUser = await fetchUserLogged(token);
+      const creatorUser = await fetchUserLogged(req);
+      const seq = await ProductsService.getNextUserId();
       if(!creatorUser) {
         return res.status(401).json({ message: `Por favor faça o login`})
       }
     try {
       const product = {
+        sku: seq,
         nome: req.body.nome,
         preco: req.body.preco,
         img: req.body.img,
         estoque: req.body.estoque,
-        criadoPor: creatorUser.nome
+        criadoPor: creatorUser
       }
-      if(!item) {
-        return res.status(403).json({ message: 'Por favor preencha corretamente as informações.'})
+      if(!product) {
+        return res.status(400).json({ message: 'Por favor preencha corretamente as informações.'})
       }
-      await ProductsModels.create(item);
+      if(await ProductsService.checkProduct(product)) {
+        return res.status(400).json({ message: 'Produto já cadastrado.'})
+      }
+      
+      await ProductsModels.create(product);
       return res.status(201).json({ msg: `Item cadastrado com sucesso nome do item: ${product.nome}`})
     } catch (error) {
       throw new Error(`erro inesperado, visite a função create do controller ${error}`)
@@ -180,4 +187,4 @@ const itensController = {
   
 }
 
-module.exports = itensController;
+module.exports = ProductsController;

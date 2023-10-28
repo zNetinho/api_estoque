@@ -4,39 +4,39 @@ const multer = require('multer');
 const uploads = require('../config/upload');
 const simpleUpload = require('../config/upload');
 const utils = require('../shared/utils/funtions');
-const itensController = require('../controller/itensController');
+const ProductsController = require('../controller/ProductsController');
 
 router
   .route('/')
-  .post(utils.checkToken, async(req, res) => itensController.create(req, res))
+  .post(async (req, res) => {ProductsController.create(req, res)})
 
 router
   .route('/')
-  .get(utils.checkToken, async(req, res) => itensController.listItens(req, res))
+  .get(utils.checkToken, async(req, res) => ProductsController.listItens(req, res))
 
 router
   .route('/:id')
-  .patch(utils.checkToken, async(req, res) => itensController.updateItem(req, res))
+  .patch(utils.checkToken, async(req, res) => ProductsController.updateItem(req, res))
 
 router
   .route('/:id')
-  .delete(utils.checkToken, async(req, res) => itensController.removeItem(req, res))
+  .delete(utils.checkToken, async(req, res) => ProductsController.removeItem(req, res))
 
 router
   .route('/export')
-  .get(utils.checkToken, async(req, res) => itensController.donwloadCSV(req, res))
+  .get(utils.checkToken, async(req, res) => ProductsController.donwloadCSV(req, res))
 
 router
   .route('/export/upload', uploads.single('arquivo'))
-  .post(async(req, res) => itensController.uploadFile(req, res))
+  .post(async(req, res) => ProductsController.uploadFile(req, res))
 
 router
   .route('/adc-massive')
-  .post(simpleUpload.single('file'), async(req, res) => itensController.massiveAdd(req, res))
+  .post(simpleUpload.single('file'), async(req, res) => ProductsController.massiveAdd(req, res))
 
 router
   .route('/csv/exclude', )
-  .delete(uploads.single('file'), async(req, res) => itensController.excludeMassive( req, res ))
+  .delete(uploads.single('file'), async(req, res) => ProductsController.excludeMassive(req, res ))
 
 
 module.exports = router;
