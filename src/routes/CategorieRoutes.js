@@ -15,4 +15,8 @@ router
   .route("/:id")
   .patch( async (req, res) => categoriaController.editCategorie(req, res));
 
+router
+  .route("/:id")
+  .delete( async (req, res) => categoriaController.deleteCategorie(req, res));
+
 module.exports = router;

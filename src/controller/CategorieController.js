@@ -40,8 +40,14 @@ const categoriaController = {
 
     await CategoriaModels.findOneAndUpdate({_id: id}, categorieToUpdate);
     return res.status(200).json({ message: categorieToUpdate})
-  }
+  },
 
+  deleteCategorie: async (req, res) => {
+    const { id } = req.params;
+    if(!id) return res.status(403).json({ message: 'Por favor passe o ID, da cateogoria'});
+    await CategoriaModels.findByIdAndDelete(id);
+    return res.status(200).json({ message: 'Categoria excluída com sucesso.'})
+  }
 }
 
 module.exports = categoriaController;
