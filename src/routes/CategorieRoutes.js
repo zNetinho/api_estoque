@@ -7,4 +7,8 @@ router
   .route("/")
   .get( async (req, res) => categoriaController.fetchCategories(req, res));
 
+router
+  .route("/")
+  .post( async (req, res) => categoriaController.createCategorie(req, res));
+
 module.exports = router;

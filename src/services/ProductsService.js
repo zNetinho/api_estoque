@@ -138,7 +138,7 @@ const ProductsService = {
             } finally {
               client.close();
             }
-          }
+    }
               
 }
 

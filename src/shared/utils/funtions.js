@@ -45,7 +45,7 @@ const utils = {
       };
       return mapaAcentos[match];
     });
-    return nomeLimpo.replace(regexEspacos, "-")
+    return nomeLimpo.replace(regexEspacos, "-").toLowerCase();
   }
 }
 
