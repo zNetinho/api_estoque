@@ -11,4 +11,8 @@ router
   .route("/")
   .post( async (req, res) => categoriaController.createCategorie(req, res));
 
+router
+  .route("/:id")
+  .patch( async (req, res) => categoriaController.editCategorie(req, res));
+
 module.exports = router;

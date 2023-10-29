@@ -26,6 +26,22 @@ const categoriaController = {
     return res.status(200).json({categorie})
   },
 
+  editCategorie: async (req, res) => {
+    const { id } = req.params;
+    if(!id) return res.status(403).json({ message: 'Por favor, envie um id válido.'});
+
+    const categorieToUpdate = {
+      nome: req.body.nome,
+      descricao: req.body.descricao,
+      title_seo: req.body.title_seo,
+      descricao_seo: req.body.descricao_seo,
+      slug: req.body.slug,
+    }
+
+    await CategoriaModels.findOneAndUpdate({_id: id}, categorieToUpdate);
+    return res.status(200).json({ message: categorieToUpdate})
+  }
+
 }
 
 module.exports = categoriaController;
