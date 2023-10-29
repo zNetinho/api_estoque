@@ -8,4 +8,8 @@ const ProductsController = require("./ProductsRoutes");
 
 router.use('/products', ProductsController)
 
+const CategorieController = require("./CategorieRoutes");
+
+router.use('/categorie', CategorieController)
+
 module.exports = router

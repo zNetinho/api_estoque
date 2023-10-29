@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const CategoriaSchema = new Schema({
     id:{
-      type: required,
+      type: Number,
       required: true
     },
     nome: {
@@ -35,4 +35,4 @@ const CategoriaSchema = new Schema({
 
 })
 
-module.exports = mongoose.model("Categoria", ProductsModel)
+module.exports = mongoose.model("Categoria", CategoriaSchema)
