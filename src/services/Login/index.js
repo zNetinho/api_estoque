@@ -20,6 +20,7 @@ const loginWithGoogle = {
     return signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        console.log(user)
         return user;
       })
       .catch((error) => {
@@ -33,6 +34,7 @@ const loginWithGoogle = {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
+        console.log(user);
         return user;
         // ...
       })

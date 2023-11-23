@@ -36,7 +36,11 @@ const categorieService = {
   },
 
   checkCategory: async (nome) => {
-    if(await CategoriaModels.findOne({nome: nome})) return true
+    const categoriaBd = await CategoriaModels.findOne({nome: nome})
+    console.log(categoriaBd)
+    if(categoriaBd){
+      return true
+    }
   }
 }
 

@@ -10,6 +10,10 @@ router
 router
     .route("/login")
     .post((req, res) => userController.login(req, res));
+    
+router
+    .route("/login-info")
+    .post((req, res) => userController.fetchUser(req, res));
 
 router
     .route("/login/:id")
@@ -26,5 +30,9 @@ router
 router
     .route("/")
     .get(async(req, res) => userController.listUser(req, res));
+
+router
+    .route("/verify-token")
+    .get( async (req, res) => userController.verifyToken(req, res))
 
 module.exports = router;

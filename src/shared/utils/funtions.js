@@ -32,6 +32,15 @@ const utils = {
         return creatorUser.nome;
   },
 
+  fetchUser: async (token) => {
+    const secret = process.env.SECRET
+    const idUser = jwt.decode(token, secret)
+    if(!idUser) return null
+    const User = await userModel.findById(idUser.id, '-password -confirm_password -__v');
+    console.log(User)
+      return User;
+},
+
   createASlug: (nomeProduto) => {
     const regexAcentos = /[áàãâäéèêëíìîïóòõôöúùûü]/g;
     const regexEspacos = /\s+/g;

@@ -12,7 +12,11 @@ router
 
 router
   .route('/')
-  .get(utils.checkToken, async(req, res) => ProductsController.listItens(req, res))
+  .get(async(req, res) => ProductsController.listItens(req, res))
+  
+router
+  .route('/:slug')
+  .get(async(req, res) => ProductsController.fetchProduct(req, res))
 
 router
   .route('/:id')

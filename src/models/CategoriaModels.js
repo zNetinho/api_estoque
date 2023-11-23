@@ -25,7 +25,8 @@ const CategoriaSchema = new Schema({
     },
     slug: {
       type: String,
-      required: true
+      required: true,
+      unique: true
     },
     produtos: {
       type: Array,

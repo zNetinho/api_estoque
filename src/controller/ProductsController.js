@@ -1,4 +1,5 @@
 const ProductsModels = require('../models/ProductsModels');
+const CategoriaModels = require("../models/CategoriaModels");
 const ProductsService = require('../services/ProductsService');
 const { fetchUserLogged } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
@@ -22,6 +23,7 @@ const ProductsController = {
         img: req.body.img,
         descricao: req.body.descricao.length > 0 ? req.body.descricao : req.body.nome,
         title_seo: req.body.nome,
+        description_seo: req.body.description_seo,
         categoria: req.body.categoria,
         slug: slug,
         estoque: req.body.estoque,
@@ -33,7 +35,11 @@ const ProductsController = {
       if(await ProductsService.checkProduct(product)) {
         return res.status(400).json({ message: 'Produto já cadastrado.'})
       }
-      
+      const categoria_nome = req.body.categoria;
+      const categoria = await CategoriaModels.findOne({nome: categoria_nome})
+      categoria.produtos.push(product.sku)
+      await categoria.save()
+      console.log(categoria)
       await ProductsModels.create(product);
       return res.status(201).json({ msg: `Item cadastrado com sucesso nome do item: ${product.nome}`})
     } catch (error) {
@@ -44,7 +50,7 @@ const ProductsController = {
   listItens: async (req, res) => {
     try {
       const ProductsModel = ProductsModels;
-      const products = await ProductsModel.find();
+      const products = await ProductsModel.find().limit(4);
       return res.status(200).json(products)
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função listItens${error.error}`)
@@ -130,43 +136,51 @@ const ProductsController = {
 
     const itens = [];
 
-    for await ( let item of itensLine) {
-      const itensLineSplit = item.split(',');
-      const seq = await ProductsService.getNextUserId();
-
-      itens.push({
-        sku: seq,
-        nome: itensLineSplit[0],
-        preco: itensLineSplit[1],
-        img: itensLineSplit[2],
-        descricao: itensLineSplit[3],
-        title_seo: itensLineSplit[0],
-        categoria: itensLineSplit[5],
-        estoque: itensLineSplit[6],
-        slug: utils.createASlug(itensLineSplit[0]),
-        criadoPor: creatorUser
-      })
-    }
-
-      // valida se o conteudo já existe com base no sku, atualiza se existir, cria se não tiver.
-      for await (const item of itens) {
-        const itemCloned = await ProductsModels.findOne({ sku: item.sku });    
-        if (itemCloned) {
-          await ProductsModels.updateOne({sku: item.sku}, item);
-        } else {
-            await ProductsModels.create({
-              nome: item.nome,
-              preco: item.preco,
-              img: item.img,
-              descricao: item.descricao,
-              title_seo: item.title_seo,
-              categoria: item.categoria,
-              estoque: item.estoque,
-              slug: utils.createASlug(item.slug),
-              criadoPor: creatorUser,
-            })
+    try {
+      for await ( let item of itensLine) {
+        const itensLineSplit = item.split(',');
+        const seq = await ProductsService.getNextUserId();
+  
+        itens.push({
+          sku: seq,
+          nome: itensLineSplit[0],
+          preco: itensLineSplit[1],
+          img: itensLineSplit[2],
+          descricao: itensLineSplit[3],
+          title_seo: itensLineSplit[0],
+          categoria: itensLineSplit[5],
+          estoque: itensLineSplit[6],
+          slug: utils.createASlug(itensLineSplit[0]),
+          criadoPor: creatorUser
+        })
+      }
+  
+        // valida se o conteudo já existe com base no sku, atualiza se existir, cria se não tiver.
+        for await (const item of itens) {
+          const itemCloned = await ProductsModels.findOne({ sku: item.sku });    
+          if (itemCloned) {
+            await ProductsModels.updateOne({sku: item.sku}, item);
+          } else {
+              await ProductsModels.create({
+                nome: item.nome,
+                preco: item.preco,
+                img: item.img,
+                descricao: item.descricao,
+                title_seo: item.title_seo,
+                categoria: item.categoria,
+                estoque: item.estoque,
+                slug: utils.createASlug(item.slug),
+                criadoPor: creatorUser,
+              })
+          }
+        }
+    } catch (error) {
+      throw {
+        toString: function () {
+          return "Verificar a função MassiveAdd"
         }
       }
+    }
 
     if(itens.length < 0) return res.status(403).json({ message: 'method not allowed'})
     return res.status(200).json({ message: 'Deu certo'});
@@ -184,17 +198,44 @@ const ProductsController = {
       input: readbleFile
     })
 
-    for await ( let item of itens) {
-      const itensExclude = item.split(',');
-      const sku = Number(itensExclude[0]);
-      const itemExclude = await ProductsModels.findOneAndDelete({sku: sku})
-      console.log(itemExclude)
+    try {
+      for await ( let item of itens) {
+        const itensExclude = item.split(',');
+        const sku = Number(itensExclude[0]);
+        const itemExclude = await ProductsModels.findOneAndDelete({sku: sku})
+        console.log(itemExclude)
+      }
+    } catch (error) {
+      throw {
+        toString: function() {
+          return `Por favor verifique a função excludeMassive`
+        }
+      }
     }
 
-    return res.status(200).json({ message: 'Ok'})
+    return res.status(204).json({ message: 'Ok'})
 
+  },
+
+  fetchProduct: async (req, res) => {
+    const { slug } = req.params;
+    if(!slug) {
+      return res.status(204).json({ message: "por favor informe uma URL valida"})
     }
-  
-}
+    try {
+      const product = await ProductsModels.findOne({slug});
+    if( slug && ! product ) {
+      return res.status(204).json({ message: "Não encontramos nenhum produto"})
+    }
+    return res.status(200).json(product);
+    } catch (error) {
+      throw {
+        toString: function() {
+          return "Tivemos um erro na aplicação por favor verifique a função fetchProduct"
+        }
+      }
+    }
+  }
+};
 
 module.exports = ProductsController;

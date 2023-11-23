@@ -12,6 +12,15 @@ router
   .post( async (req, res) => categoriaController.createCategorie(req, res));
 
 router
+  .route("/products")
+  .get( async (req, res) => categoriaController.fetchProducts(req, res))
+
+router
+  .route("/:slug")
+  .get( async (req, res) => categoriaController.fetchCategorieSlug(req, res))
+
+
+router
   .route("/:id")
   .patch( async (req, res) => categoriaController.editCategorie(req, res));
 

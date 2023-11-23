@@ -19,9 +19,9 @@ const userModel = new Schema({
         type: String,
         required: true
     },
-    // tasks: {
-    //     type: [task]
-    // }
+    avatar: {
+        type: String
+    },
 })
 
 module.exports = mongoose.model("User", userModel)
