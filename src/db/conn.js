@@ -4,7 +4,7 @@ require('dotenv').config()
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = process.env.DB_PASSWORD
 
-const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@devagram.zjxhfk7.mongodb.net/projeto-estoque`
+const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apipaginada.eorpwg7.mongodb.net/projeto-estoque`
 
 mongoose.set("strictQuery", true)
 

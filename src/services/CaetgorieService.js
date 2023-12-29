@@ -5,7 +5,7 @@ const CategoriaModels = require("../models/CategoriaModels");
 // Variaveis
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = process.env.DB_PASSWORD
-const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@devagram.zjxhfk7.mongodb.net/projeto-estoque`
+const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apipaginada.eorpwg7.mongodb.net/projeto-estoque`
 
 const dbName = 'projeto-estoque';
 
@@ -36,10 +36,11 @@ const categorieService = {
   },
 
   checkCategory: async (nome) => {
+    console.log(nome)
     const categoriaBd = await CategoriaModels.findOne({nome: nome})
-    console.log(categoriaBd)
-    if(categoriaBd){
-      return true
+    console.log('Categoria bd', categoriaBd)
+    if(categoriaBd === null){
+      return false
     }
   }
 }

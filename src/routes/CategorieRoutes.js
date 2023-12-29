@@ -9,15 +9,20 @@ router
 
 router
   .route("/")
-  .post( async (req, res) => categoriaController.createCategorie(req, res));
+  .post( async (req, res, next) => categoriaController.createCategorie(req, res, next));
 
 router
   .route("/products")
   .get( async (req, res) => categoriaController.fetchProducts(req, res))
 
 router
+  .route("/:q=")
+  .get( async (req, res) => categoriaController.fetchSearch(req, res))
+
+
+router
   .route("/:slug")
-  .get( async (req, res) => categoriaController.fetchCategorieSlug(req, res))
+  .get( async (req, res, next) => categoriaController.fetchCategorieSlug(req, res, next))
 
 
 router

@@ -13,7 +13,7 @@ const dbName = 'contador';
 // Variaveis
 const DB_USER = process.env.DB_USER
 const DB_PASSWORD = process.env.DB_PASSWORD
-const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@devagram.zjxhfk7.mongodb.net/projeto-estoque`
+const URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apipaginada.eorpwg7.mongodb.net/projeto-estoque`
 
 // Funções auxiliares.
 const ProductsService = {
@@ -98,23 +98,23 @@ const ProductsService = {
         if(productCloned) return true;
     },
 
-    getNextSequence: async (name) => {
-        const MongoClient = require('mongodb').MongoClient;
+    // getNextSequence: async (name) => {
+    //     const MongoClient = require('mongodb').MongoClient;
 
-        const URL = 'mongodb://localhost:27017';
-        const dbName = 'contador';
+    //     const URL = 'mongodb://localhost:27017';
+    //     const dbName = 'contador';
         
-        // Função para obter o próximo valor do auto-incremento
+    //     // Função para obter o próximo valor do auto-incremento
 
-        debugger
+    //     debugger
         
-        // Exemplo de como usar a função getNextUserId
-        (async () => {
-          const novoUserId = await getNextUserId();
-          console.log('Próximo UserID:', novoUserId);
-        })();
+    //     // Exemplo de como usar a função getNextUserId
+    //     (async () => {
+    //       const novoUserId = await getNextUserId();
+    //       console.log('Próximo UserID:', novoUserId);
+    //     })();
         
-        },
+    //     },
         getNextUserId: async () => {
             const client = new MongoClient(URL, { useUnifiedTopology: true });
             try {
