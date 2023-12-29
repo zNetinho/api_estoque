@@ -1,40 +1,50 @@
-const CategoriaModels = require("../models/CategoriaModels");
-const ProductsModels = require("../models/ProductsModels");
-const { getNextIdCategory, checkCategory } = require("../services/CaetgorieService");
-const utils = require('../shared/utils/funtions');
+const NotFound = require("../error/not_found.js");
+const RequestIncorreta = require("../error/request_incorrect.js");
+const CategoriaModels = require("../models/CategoriaModels.js");
+const ProductsModels = require("../models/ProductsModels.js");
+const { getNextIdCategory, checkCategory } = require("../services/CaetgorieService.js");
+const utils = require('../shared/utils/funtions.js');
 
 const categoriaController = {
 
-  fetchCategories: async (req, res) => {
-    const categorias = await CategoriaModels.find();
-    console.log(categorias)
-    if(!categorias) return res.status(403).json({ message: `error na chamada, por favor verifique a rota`})
-    return res.status(200).json(categorias)
+  fetchCategories: async (req, res, next) => {
+    try {
+      const categorias = await CategoriaModels.find();
+      console.log(categorias)
+      if(!categorias) return res.status(403).json({ message: `error na chamada, por favor verifique a rota`})
+      return res.status(200).json(categorias)
+    } catch (error) {
+      next(error)
+    }
   },
 
-  createCategorie: async (req, res) => {
-    const id = await getNextIdCategory()
+  createCategorie: async (req, res, next) => {
+    console.log(req.body)
+    
     const slug = utils.createASlug(req.body.nome)
     try {
       const categorie = {
-        id: id,
         nome: req.body.nome,
         descricao: req.body.descricao.length > 0 ? req.body.descricao : req.body.nome,
         title_seo: req.body.nome,
         descricao_seo: req.body.descricao_seo,
         slug: slug,
+        texto_acima: req.body.texto_acima,
+        texto_abaixo: req.body.texto_abaixo,
       }
-      if(checkCategory(req.body.nome)){
-        return res.status(404).json({ message: `categora não pode ser criada, ja existe outra com o mesmo nome ${req.body.nome}`})
+      if( await checkCategory(req.body.nome)){
+        return res.status(401).json({ message: `categora não pode ser criada, ja existe outra com o mesmo nome ${req.body.nome}`})
       };
-      await CategoriaModels.create(categorie);
-      return res.status(200).json({categorie})
-    } catch (error) {
-      throw {
-        toString: function () {
-          return "Verifique a função createCategorie"
-        }
+      if( categorie !== null || undefined) {
+        const id = await getNextIdCategory();
+        categorie.id = id;
+        await CategoriaModels.create(categorie);
+        return res.status(201).json({categorie})
+      } else {
+        next(new RequestIncorreta("Houve um erro com a requisição"))
       }
+    } catch (error) {
+      next(error)
     }
   },
 
@@ -69,16 +79,22 @@ const categoriaController = {
     return res.status(200).json({ message: 'Categoria excluída com sucesso.'})
   },
 
-  fetchCategorieSlug: async (req, res) => {
-    const { slug } = req.params
+  fetchCategorieSlug: async (req, res, next) => {
+    try {
+      const { slug } = req.params
     if(!slug) {
       return res.status(404).json({ message: "Não encontramos a categoria acessada"})
     }
     const categoria = await CategoriaModels.findOne({ slug });
-    if(slug && !categoria) {
-      return res.status(404).json({ message: `categoria não encontrada ${req.params}`})
+    console.log("categoria", categoria)
+    if( categoria !== null ) {
+      return res.status(200).json({ categoria })
+    } else {
+      next(new NotFound("A categoria não foi encontrada"))
     }
-    return res.status(200).json({categoria,})
+    } catch (error) {
+      res.status(400).send({ message: `${error.message} - URL da categoria não foi encontrada`})
+    }
   },
 
   fetchProducts: async (req, res) => {
@@ -87,11 +103,15 @@ const categoriaController = {
     for (let index = 0; index < skus.length; index++) {
       const element = skus[index];
       console.log(element)
-      const product = await ProductsModels.find({sku: element}).limit(2)
+      const product = await ProductsModels.find({sku: element})
       productsCategorias.push(product)
     }
 
     return res.status(200).json(productsCategorias);
+  },
+
+  fetchSearch: async (req, res) => {
+    const {searchTerm} = req.body
   }
 }
 

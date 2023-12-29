@@ -50,7 +50,7 @@ const ProductsController = {
   listItens: async (req, res) => {
     try {
       const ProductsModel = ProductsModels;
-      const products = await ProductsModel.find().limit(4);
+      const products = await ProductsModel.find();
       return res.status(200).json(products)
     } catch (error) {
       throw new Error(`Erro inesperado durante o carregamento, função listItens${error.error}`)
