@@ -5,6 +5,7 @@ const { fetchUserLogged } = require('../shared/utils/funtions');
 const { Readable } = require('stream');
 const readline = require('readline');
 const utils = require('../shared/utils/funtions');
+const NotFound = require('../error/not_found');
 
 
 const ProductsController = {
@@ -217,23 +218,22 @@ const ProductsController = {
 
   },
 
-  fetchProduct: async (req, res) => {
+  fetchProduct: async (req, res, next) => {
     const { slug } = req.params;
     if(!slug) {
       return res.status(204).json({ message: "por favor informe uma URL valida"})
     }
     try {
       const product = await ProductsModels.findOne({slug});
-    if( slug && ! product ) {
-      return res.status(204).json({ message: "Não encontramos nenhum produto"})
+      console.log(product)
+    if( product === null ) {
+      next(new NotFound("Não foi possível localizar o produto"))
+      // return res.status(204).json({ message: "Não encontramos nenhum produto"})
+    } else {
+      return res.status(200).json(product);
     }
-    return res.status(200).json(product);
     } catch (error) {
-      throw {
-        toString: function() {
-          return "Tivemos um erro na aplicação por favor verifique a função fetchProduct"
-        }
-      }
+      next(error)
     }
   }
 };

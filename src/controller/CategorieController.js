@@ -9,17 +9,20 @@ const categoriaController = {
 
   fetchCategories: async (req, res, next) => {
     try {
-      const categorias = await CategoriaModels.find();
-      console.log(categorias)
+      const categorias = CategoriaModels.find({}, "-_id -__v");
+      const countDocuments = await CategoriaModels.countDocuments({});
+      categorias.quantity = countDocuments
       if(!categorias) return res.status(403).json({ message: `error na chamada, por favor verifique a rota`})
-      return res.status(200).json(categorias)
+      req.result = categorias;
+      next();
+      // return res.status(200).json(categorias)
     } catch (error) {
       next(error)
     }
   },
 
   createCategorie: async (req, res, next) => {
-    console.log(req.body)
+    console.log(req.headers)
     
     const slug = utils.createASlug(req.body.nome)
     try {
@@ -49,6 +52,7 @@ const categoriaController = {
   },
 
   editCategorie: async (req, res) => {
+    console.log(req)
     const { id } = req.params;
     if(!id) return res.status(403).json({ message: 'Por favor, envie um id válido.'});
     try {
@@ -59,8 +63,7 @@ const categoriaController = {
         descricao_seo: req.body.descricao_seo,
         slug: req.body.slug,
       }
-  
-      await CategoriaModels.findOneAndUpdate({_id: id}, categorieToUpdate);
+      await CategoriaModels.findOneAndUpdate({id: id}, categorieToUpdate);
       return res.status(200).json({ message: categorieToUpdate})
     } catch (error) {
       throw {

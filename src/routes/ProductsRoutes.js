@@ -16,7 +16,7 @@ router
   
 router
   .route('/:slug')
-  .get(async(req, res) => ProductsController.fetchProduct(req, res))
+  .get(async(req, res, next) => ProductsController.fetchProduct(req, res, next))
 
 router
   .route('/:id')

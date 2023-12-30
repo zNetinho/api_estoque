@@ -42,7 +42,7 @@ const utils = {
 },
 
   createASlug: (nomeProduto) => {
-    const regexAcentos = /[áàãâäéèêëíìîïóòõôöúùûü]/g;
+    const regexAcentos = /[áàãâäéèêëíìîïóòõôöúùûüç]/g;
     const regexEspacos = /\s+/g;
     const nomeLimpo = nomeProduto.replace(regexAcentos, function (match) {
       const mapaAcentos = {
@@ -50,7 +50,7 @@ const utils = {
         'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
         'í': 'i', 'ì': 'i', 'î': 'i', 'ï': 'i',
         'ó': 'o', 'ò': 'o', 'õ': 'o', 'ô': 'o', 'ö': 'o',
-        'ú': 'u', 'ù': 'u', 'û': 'u', 'ü': 'u',
+        'ú': 'u', 'ù': 'u', 'û': 'u', 'ü': 'u', 'ç': 'c'
       };
       return mapaAcentos[match];
     });
