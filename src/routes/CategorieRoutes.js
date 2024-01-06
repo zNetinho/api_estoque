@@ -26,7 +26,7 @@ router
   .get( async (req, res, next) => categoriaController.fetchCategorieSlug(req, res, next))
 
 router
-  .route("/:id")
+  .route("/:slug")
   .put( async (req, res) => categoriaController.editCategorie(req, res));
 
 router

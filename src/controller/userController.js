@@ -84,8 +84,8 @@ const userController = {
                   // O id do user irá junto com o token
                   id: user._id,
               }, secret)
-
               const userLogged = await fetchUser(token)
+              console.log(token, userLogged)
               if(!userLogged) {
                 return res.status(500).json({ message: "Erro ao adiquirir as informaçeos do usuario"})
               }

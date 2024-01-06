@@ -53,8 +53,8 @@ const categoriaController = {
 
   editCategorie: async (req, res) => {
     console.log(req)
-    const { id } = req.params;
-    if(!id) return res.status(403).json({ message: 'Por favor, envie um id válido.'});
+    const { slug } = req.params;
+    if(!slug) return res.status(403).json({ message: 'Por favor, envie um id válido.'});
     try {
       const categorieToUpdate = {
         nome: req.body.nome,
@@ -63,7 +63,7 @@ const categoriaController = {
         descricao_seo: req.body.descricao_seo,
         slug: req.body.slug,
       }
-      await CategoriaModels.findOneAndUpdate({id: id}, categorieToUpdate);
+      await CategoriaModels.findOneAndUpdate({ slug: slug }, categorieToUpdate);
       return res.status(200).json({ message: categorieToUpdate})
     } catch (error) {
       throw {
@@ -75,14 +75,20 @@ const categoriaController = {
 
   },
 
-  deleteCategorie: async (req, res) => {
+  deleteCategorie: async (req, res, next) => {
     const { id } = req.params;
+    console.log(id)
     if(!id) return res.status(403).json({ message: 'Por favor passe o ID, da cateogoria'});
-    await CategoriaModels.findByIdAndDelete(id);
-    return res.status(200).json({ message: 'Categoria excluída com sucesso.'})
+    try {
+      await CategoriaModels.findOneAndDelete(Number(id));
+      return res.status(200).json({ message: 'Categoria excluída com sucesso.'})
+    } catch (error) {
+      console.log(error)
+    }
   },
 
   fetchCategorieSlug: async (req, res, next) => {
+    console.log(req)
     try {
       const { slug } = req.params
     if(!slug) {
@@ -91,7 +97,7 @@ const categoriaController = {
     const categoria = await CategoriaModels.findOne({ slug });
     console.log("categoria", categoria)
     if( categoria !== null ) {
-      return res.status(200).json({ categoria })
+      return res.status(200).json( categoria )
     } else {
       next(new NotFound("A categoria não foi encontrada"))
     }
