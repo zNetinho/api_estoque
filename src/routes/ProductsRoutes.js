@@ -8,12 +8,16 @@ const ProductsController = require('../controller/ProductsController');
 
 router
   .route('/')
-  .post(async (req, res) => {ProductsController.create(req, res)})
+  .post(async (req, res) => ProductsController.create(req, res))
 
 router
   .route('/')
   .get(async(req, res) => ProductsController.listItens(req, res))
   
+router
+  .route('/')
+  .patch(async(req, res) => ProductsController.addProductToCategoria(req, res))
+
 router
   .route('/:slug')
   .get(async(req, res, next) => ProductsController.fetchProduct(req, res, next))

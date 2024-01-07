@@ -235,6 +235,25 @@ const ProductsController = {
     } catch (error) {
       next(error)
     }
+  },
+
+  addProductToCategoria: async (req, res) => {
+    console.log(req.body)
+    const { nomeCategoria, skuProduto } = req.body;
+
+    const categoria = await CategoriaModels.findOneAndUpdate(
+      { nome: nomeCategoria },
+      { $push: { produtos: { sku: skuProduto }}},
+      { new: true}
+    )
+
+    if (categoria) {
+      return res.status(200).json({ message: `O SKU ${skuProduto} do produto foi adicionado à categoria ${nomeCategoria}` });
+  } else {
+      return res.status(404).json({ message: `Categoria ${nomeCategoria} não encontrada` });
+  }
+
+    // return res.status(200).json( { message: `O SKU ${skuProduto} do produto foi adicionado a categoria ${nomeCategoria}`})
   }
 };
 
